@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: od-gateway
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+  data:
+    redis:
+      host: 140.245.70.130
+      port: 6379
+      timeout: 3000
+      key:
+        token: gateway-token::%s
+        role: gateway-account-role
+        rule: gateway-rule
+      ttl:
+        role: 86400000             # 1 day
+        rule: 86400000             # 1 day
+        access-token: 600000       # 10 min
+        refresh-token: 259200000   # 3 day
+
+  datasource:
+    url: jdbc:mysql://140.245.70.130:3306/gateway?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: akkessun
+    password: sunyang2ek+
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 1
+        failureRateThreshold: 100
+        waitDurationInOpenState: 5m
+        slow-call-duration-threshold: 3s
+        slow-call-rate-threshold: 100
+        permitted-number-of-calls-in-half-open-state: 5
+    instances:
+      redis:
+        base-config: default
+
+jwt:
+  token:
+    secret-key: hello-jwt
