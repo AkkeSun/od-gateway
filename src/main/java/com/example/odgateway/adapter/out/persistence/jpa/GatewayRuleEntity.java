@@ -69,7 +69,6 @@ class GatewayRuleEntity {
             .uriPattern(uriPattern)
             .serviceUrl(serviceInfo.getUrl())
             .role(role.getName())
-            .regDateTime(regDateTime)
             .build();
     }
 }

@@ -1,6 +1,5 @@
 package com.example.odgateway.domain.model;
 
-import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
@@ -9,8 +8,7 @@ public record GatewayRule(
     String httpMethod,
     String uriPattern,
     String serviceUrl,
-    String role,
-    LocalDateTime regDateTime
+    String role
 ) {
 
     public boolean isAnonymous() {
