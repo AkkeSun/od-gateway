@@ -8,10 +8,8 @@ import com.example.odgateway.application.port.out.AccountStoragePort;
 import com.example.odgateway.application.port.out.RedisStoragePort;
 import com.example.odgateway.domain.model.Account;
 import com.example.odgateway.domain.model.RefreshTokenInfo;
-import com.example.odgateway.domain.model.Role;
 import com.example.odgateway.infrastructure.util.JwtUtil;
 import com.example.odgateway.infrastructure.util.UserAgentUtil;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,9 +36,7 @@ class RegisterTokenService implements RegisterTokenUseCase {
             .username(account.getUsername())
             .refreshToken(jwtUtil.createRefreshToken(command.username()))
             .userAgent(userAgentUtil.getUserAgent())
-            .roles(account.getRoles().stream()
-                .map(Role::name)
-                .collect(Collectors.joining(",")))
+            .roles(account.getRoleNames())
             .build();
 
         redisStoragePort.register(
