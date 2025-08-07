@@ -40,7 +40,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     private final RedisStoragePort redisStoragePort;
     private final GatewayRuleStoragePort gatewayRuleStoragePort;
 
-    AuthorizationFilter(RedisStoragePort redisStoragePort, GatewayRuleStoragePort gatewayRuleStoragePort
+    AuthorizationFilter(RedisStoragePort redisStoragePort,
+        GatewayRuleStoragePort gatewayRuleStoragePort
     ) {
         this.parser = new PathPatternParser();
         this.redisStoragePort = redisStoragePort;
@@ -88,15 +89,18 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             }
         }
 
+        if (auth.getPrincipal().toString().contains("anonymous")) {
+            throw new AccessDeniedException("e");
+        }
         filterChain.doFilter(req, res);
     }
 
     private List<GatewayRule> getAuthorizationRules() {
         List<GatewayRule> rules = redisStoragePort.findDataList(gatewayRuleKey, GatewayRule.class);
-        if(rules.isEmpty()) {
+        if (rules.isEmpty()) {
             rules = gatewayRuleStoragePort.findAll();
             redisStoragePort.register(gatewayRuleKey, toJsonString(rules), gatewayRuleTtl);
         }
-        return  rules;
+        return rules;
     }
 }
